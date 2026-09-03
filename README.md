@@ -50,16 +50,21 @@ RightsBridge does not determine legal entitlement, replace a public institution,
 
 ## Planned MVP acceptance
 
-- [ ] 5 social-rights entry paths
-- [ ] barrier-aware presentation modes
-- [ ] large-text / high-contrast / reduced-motion controls
-- [ ] browser read-aloud
-- [ ] print / save next-step card
-- [ ] no network request required after initial page load
-- [ ] mobile 390 px QA with zero horizontal overflow
-- [ ] keyboard-only flow QA
-- [ ] public GitHub Pages deployment
+- [x] 5 social-rights entry paths
+- [x] barrier-aware presentation modes
+- [x] large-text / high-contrast / reduced-motion controls
+- [x] browser read-aloud
+- [x] print / save next-step card
+- [x] no network request required after initial page load
+- [x] mobile 390 px QA with zero horizontal overflow
+- [x] keyboard-only flow QA
+- [x] public GitHub Pages deployment
 - [ ] max 3-minute demo video
+
+## Live demo
+
+- Production: https://senih25.github.io/rightsbridge-humanity/
+- QA evidence: [QA.md](./QA.md)
 
 ## License
 
