@@ -39,5 +39,16 @@ const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
 assert.ok(scripts.length > 0, "Application script missing");
 for (const [, code] of scripts) new Script(code, { filename: "rightsbridge-inline-script" });
 assert.ok(!/<script[^>]+src=["']https?:/i.test(html), "Unexpected external script");
+const lifeChoices = buttons.filter(([, attrs]) => /\bdata-life=/.test(attrs));
+const barriers = buttons.filter(([, attrs]) => /\bdata-barrier=/.test(attrs));
+assert.equal(lifeChoices.length, 5, "Five supported synthetic life paths");
+assert.equal(barriers.length, 4, "Four interactive barriers");
+for (const [, attrs] of [...lifeChoices, ...barriers]) {
+  assert.match(attrs, /aria-pressed="(?:true|false)"/, "Choice needs pressed-state semantics");
+}
+assert.match(html, /role="note"/, "Explicit unofficial-service note missing");
+assert.match(html, /@media\s*\(max-width:900px\)/, "Tablet breakpoint missing");
+assert.match(html, /window\.print\(\)/, "User-controlled printing capability missing");
+assert.match(html, /speechSynthesis/, "Optional browser speech support missing");
 console.log("PASS: Turkish semantics, skip link, focus, live regions, labelled controls, safe external links, reduced motion and responsive CSS markers");
 console.log("NOTE: This is a static smoke; it does not certify WCAG conformance or assistive-technology behavior");
