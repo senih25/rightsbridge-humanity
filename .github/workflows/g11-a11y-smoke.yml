@@ -1,0 +1,35 @@
+name: G11 independent accessibility smoke
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "test/a11y-smoke.mjs"
+      - ".github/workflows/g11-a11y-smoke.yml"
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  a11y-smoke:
+    name: Offline Node 24 semantics and motion preference
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            index.html
+            test/a11y-smoke.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Source syntax
+        run: node --check test/a11y-smoke.mjs
+      - name: Accessibility contract smoke (no external services)
+        run: node test/a11y-smoke.mjs
