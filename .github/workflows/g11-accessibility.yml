@@ -1,0 +1,32 @@
+name: RightsBridge offline accessibility smoke
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - "test/accessibility-smoke.mjs"
+      - ".github/workflows/g11-accessibility.yml"
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "test/accessibility-smoke.mjs"
+      - ".github/workflows/g11-accessibility.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-accessibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Offline semantic and responsive regression
+        run: node test/accessibility-smoke.mjs
