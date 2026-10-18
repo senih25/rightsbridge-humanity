@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { Script } from "node:vm";
 
 const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 assert.match(html, /<html[^>]+lang="tr"/i, "Page language must be Turkish");
@@ -26,5 +27,17 @@ for (const a of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
     assert.match(a[1], /rel="[^"]*noopener[^"]*noreferrer[^"]*"/i, "New tab link lacks opener protections");
   }
 }
+// Preserve the complementary G-11 draft checks without a second CI workflow.
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1]);
+assert.equal(new Set(ids).size, ids.length, "Duplicate HTML IDs break assistive targets");
+for (const [, labels] of html.matchAll(/\baria-labelledby="([^"]+)"/g)) {
+  for (const id of labels.split(/\s+/)) {
+    assert.ok(ids.includes(id), "Broken aria-labelledby reference");
+  }
+}
+const scripts = [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
+assert.ok(scripts.length > 0, "Application script missing");
+for (const [, code] of scripts) new Script(code, { filename: "rightsbridge-inline-script" });
+assert.ok(!/<script[^>]+src=["']https?:/i.test(html), "Unexpected external script");
 console.log("PASS: Turkish semantics, skip link, focus, live regions, labelled controls, safe external links, reduced motion and responsive CSS markers");
 console.log("NOTE: This is a static smoke; it does not certify WCAG conformance or assistive-technology behavior");
